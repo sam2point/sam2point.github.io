@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html>
+
+    
+
+<head>
+  <meta charset="utf-8">
+  <meta name="description"
+        content="Evaluating mathematical reasoning of foundation models in visual contexts">
+  <meta name="keywords" content="MathVista, Math Vista">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title> SAM2Point: Segment Any 3D as Videos in Zero-shot and Promptable Manners</title>
+
+  <!-- <link rel="icon" type="image/x-icon" href="/blog/assets/images/logos/favicon.ico"> -->
+  <link rel="icon" href="./demos/logo.png">
+
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+  <link rel="stylesheet" href="./static/css/leaderboard.css">
+
+  <!-- <link href="https://unpkg.com/tabulator-tables@5.5.2/dist/css/tabulator_bulma.min.css" rel="stylesheet">
+  <script type="text/javascript" src="https://unpkg.com/tabulator-tables@5.5.2/dist/js/tabulator.min.js"></script> -->
+  <script type="text/javascript" src="static/js/sort-table.js" defer></script>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/explorer-index.js"></script>
+  <script src="./static/js/question_card.js"></script>
+
+  <script src="./static/js/leaderboard_testmini.js"></script>  
+  <script src="./data/results/output_folders.js" defer></script>
+  <script src="./data/results/model_scores.js" defer></script>
+
+  <script src="./visualizer/data/data_public.js" defer></script>
+
+  <style>
+      .center-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            margin-top: -20px;
+        }
+    .node {
+      fill: #f8f1e4;
+      stroke: #000;
+      stroke-width: 1;
+      rx: 10;
+      ry: 10;
+    }
+    .node text {
+      font-size: 14px;
+      text-anchor: middle;
+    }
+    .link {
+      fill: none;
+      stroke: #000;
+      stroke-width: 2;
+    }
+    .badge {
+      font-size: 12px;
+    }
+  </style>
+
+</head>
+<body>
+
+<nav class="navbar" role="navigation" aria-label="main navigation">
+  <div class="navbar-brand">
+    <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </a>
+  </div>
+</nav>
+
+
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <h1 class="title is-2 publication-title"  style="display: inline-block;">
+            <img src="demos/logo.png" style="width:1em;vertical-align: middle" alt="Logo"/>
+            <span class="mathvista" style="vertical-align: middle">Sam2Point</span>
+            </h1>
+          <h2 class="subtitle is-4 publication-subtitle is-bold">
+            Segment Any 3D as Videos in Zero-shot and Promptable Manners
+          </h2>
+          <div class="is-size-5 publication-authors">
+            <span class="author-block">
+              <a href="https://ziyuguo99.github.io/">Ziyu Guo*</a><sup style="color:#6fbf73;">1</sup>,</span>
+            <span class="author-block">
+              <a href="https://zrrskywalker.github.io/">Renrui Zhang*</a><sup style="color:#f41c1c;">2,</sup><sup style="color:#9400D3">3</sup>,</span>
+            <span class="author-block">
+              <a>Xiangyang Zhu*</a><sup style="color:#ffac33;">4</sup>,</span>
+            <span class="author-block">
+              <a>Chengzhuo Tong</a><sup style="color:#ffac33;">4</sup>,</span>
+          </div>
+          <div class="is-size-5 publication-authors">
+            <span class="author-block">
+              <a href="https://gaopengcuhk.github.io/">Peng Gao</a><sup style="color:#ffac33">4</sup>,</span>
+            </span>
+            <span class="author-block" style="margin-bottom: 10px;">
+              <a href="https://chunyuan.li/">Chunyuan Li</a><sup style="color:#9400D3">3</sup>,
+            </span>
+            <span class="author-block">
+              <a href="https://www.cse.cuhk.edu.hk/~pheng/1.html">Pheng-Ann Heng</a><sup style="color:#6fbf73">1</sup>
+            </span>
+
+            <!-- <span class="author-block">
+              <a href="https://fengli-ust.github.io/">Feng Li</a><sup style="color:#ffac33">4,</sup></sup><sup style="color:#6fbf73;">♡</sup>,</span>
+            
+            <span class="author-block">
+              <a href="https://haozhang534.github.io/">Hao Zhang</a><sup style="color:#ffac33">4,</sup><sup style="color:#6fbf73;">♡</sup></span><br>
+            
+            <span class="author-block">
+              <a href="https://www.linkedin.com/in/kaichen-zhang-014b17219/?originalSubdomain=sg">Kaichen Zhang</a><sup style="color:#ed4b82;">2</sup>,
+            </span>
+            <span class="author-block">
+              <a href="https://yanwei-li.com/">Yanwei Li</a><sup style="color:#9400D3">3,</sup><sup style="color:#6fbf73;">♡</sup>,</span>
+            <span class="author-block">
+              <a href="https://liuziwei7.github.io/">Ziwei Liu</a><sup style="color:#ed4b82">2</sup>,
+            </span> -->
+            
+          </div>
+
+          <div class="is-size-5 publication-authors">
+            <span class="author-block" style="margin-right: 15px;"><sup style="color:#6fbf73;">1</sup>CUHK MiuLar Lab,</span>
+            <span class="author-block" style="margin-right: 15px;"><sup style="color:#f41c1c">2</sup>CUHK MMLab,</span>
+            <span class="author-block" style="margin-right: 15px;"><sup style="color:#9400D3">3</sup>ByteDance,</span>
+            <span class="author-block" style="margin-right: 15px;"><sup style="color:#ffac33">4</sup>Shanghai AI Laboratory</span><br>
+            <!-- <span class="author-block" style="margin-right: 15px;"><sup style="color:#ed4b82">3</sup>Shanghai AI Laboratory,</span> -->
+            <!-- <span class="author-block"><sup style="color:#6fbf73;">♡</sup> Work collaborated with ByteDance</span><br> -->
+            <!-- <span class="paper-block"><b style="color:#f41c1c">ICLR 2024 Oral</b> (85 in 7304, 1.2%)</span> -->
+          </div>
+        
+
+          <div class="column has-text-centered">
+            <div class="publication-links">
+              <!-- PDF Link. -->
+<!--               <span class="link-block">
+                <a href="https://arxiv.org/pdf/2408.03326"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fas fa-file-pdf"></i>
+                  </span>
+                  <span>Paper</span>
+                </a>
+              </span> -->
+              <span class="link-block">
+                <a href="https://github.com/ZiyuGuo99/SAM2Point/blob/main/SAM2Point.pdf"
+                   class="external-link button is-normal is-rounded is-dark">
+                <!-- <a href="https://lupantech.github.io/papers/arxiv23_mathvista.pdf"
+                   class="external-link button is-normal is-rounded is-dark"> -->
+                  <span class="icon">
+                      <i class="ai ai-arxiv"></i>
+                  </span>
+                  <!-- <span>arXiv</span> -->
+                  <span>Paper</span>
+                </a>
+              </span>
+              <!-- Code Link. -->
+              <span class="link-block">
+                <a href="https://github.com/ZiyuGuo99/SAM2Point"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-github"></i>
+                  </span>
+                  <span>Code</span>
+                  </a>
+              </span>
+              <!-- Dataset Link. -->
+              <!-- <span class="link-block">
+                <a href="https://huggingface.co/lmms-lab"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <p style="font-size:18px">🤗</p>
+                  </span>
+                  <span>Checkpoints</span>
+                </a>
+              </span>  -->
+              <!-- Visualization Link. -->
+              <!-- <span class="link-block">
+                <a href="https://huggingface.co/datasets/lmms-lab/LLaVA-OneVision-Data"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <p style="font-size:18px">🤗</p>
+                  </span>
+                  <span>LLaVA-OneVision Data</span>
+                </a>
+              </span>  -->
+              <!-- Leaderboard Link. -->
+              <span class="link-block">
+                <a href="https://huggingface.co/spaces/ZiyuG/SAM2Point"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <p style="font-size:18px">🎨</p>
+                  </span>
+                  <span>Live Demo</span>
+                </a>
+              </span>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+<section class="section">
+  <div class="container" style="margin-bottom: 2vh;">
+    <!-- Abstract. -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Introduction</h2>
+        <div class="content has-text-justified">
+            <p>
+        We introduce <span class="mathvista">Sam2Point</span>, a preliminary exploration adapting Segment Anything Model 2 (SAM 2) for zero-shot and promptable 3D segmentation. Our framework supports various prompt types, including <b><i>3D points, boxes, and masks</b></i>, and can generalize across diverse scenarios, such as <i><b>3D objects, indoor scenes, outdoor scenes, and raw LiDAR</b></i>.
+            </p>
+
+        </div>
+
+    
+
+      </div>
+    </div>
+  </div>
+
+  <div class="columns is-centered"  style="margin-bottom: 90px;">
+      <div class="content has-text-centered">
+        <img src="demos/fig1.png" alt="data-overview" style="max-width: 55%;"/>
+        <p> 
+          <b>The Segmentation Paradigm of <span class="mathvista">Sam2Point</span>.</b> 
+        </p> 
+      </div>
+    </div>
+  
+    <div class="container" style="margin-bottom: 2vh;">
+      <!-- Abstract. -->
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+          <div class="content has-text-justified">
+              <p>
+                To our best knowledge, <span class="mathvista">Sam2Point</span> presents <b><i>the most faithful implementation of SAM in 3D</i></b>, demonstrating superior implementation efficiency, promptable flexibility, and generalization capabilities for 3D segmentation..
+              </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="columns is-centered">
+      <div class="content has-text-centered">
+        <img src="demos/fig2.png" alt="data-overview" style="max-width: 55%;"/>
+        <p> 
+          <b>Comparison of <span class="mathvista">Sam2Point</span> and Previous SAM-based Methods.</b>
+        </p> 
+      </div>
+    </div>
+    
+
+      </div>
+    </div>
+    <!--/ Abstract. -->
+</div>
+</section>
+
+
+<!-- <section class="section">
+    <div class="container" style="margin-bottom: 2vh;">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+          <h2 class="title is-3">Open-source Release</h2>
+          <div class="content has-text-justified">
+            <ul>
+                <p>
+                We open-source the <span class="mathvista">Sam2Point</span> to further research to fully harness SAM 2's potential in 3D domains. 
+                </p>
+                <li> <p style="font-size:18px"><i class="fab fa-github"></i>  <a href="https://github.com/ZiyuGuo99/SAM2Point/"> Code</a>: Try <span class="mathvista">Sam2Point</span> with our released code</li>
+                <li><p style="font-size:18px">🎨 <a href="https://huggingface.co/spaces/ZiyuG/SAM2Point/">Live Demo</a>: Try it out yourself!</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+  </div>
+</section> -->
+
+
+<section class="section">
+  <div class="container" style="margin-bottom: 2vh;">
+    <!-- Abstract. -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Demonstrations of <span class="mathvista">Sam2Point</span></h2>
+        <div class="content has-text-justified">
+        <p>
+          We showcase demonstrations of <span class="mathvista">Sam2Point</span> in segmenting 3D data with various 3D prompt on different datasets. 
+      </p>
+        <div id="results-carousel" class="carousel results-carousel">
+
+          <div class="box m-5">
+            <div class="content has-text-centered">
+              <img src="demos/object.jpg" alt="algebraic reasoning" width="70%"/>
+              <p> 3D Object Segmentation with <span class="mathvista">Sam2Point</span> on Objaverse (Deitke et al., 2023). The 3D
+                prompt and segmentation results are highlighted in red and green, respectively.
+            </div>
+          </div>
+
+          <div class="box m-5">
+            <div class="content has-text-centered">
+              <img src="demos/s3dis.jpg" alt="arithmetic reasoning" width="70%"/>
+              <p> 3D Indoor Scene Segmentation with <span class="mathvista">Sam2Point</span> on S3DIS (Armeni et al., 2016). The
+                3D prompt and segmentation results are highlighted in red and green, respectively.
+            </div>
+          </div>
+
+          <div class="box m-5">
+            <div class="content has-text-centered">
+              <img src="demos/scannet.jpg" alt="arithmetic reasoning" width="70%"/>
+              <p> 3D Indoor Scene Segmentation with <span class="mathvista">Sam2Point</span> on ScanNet (Dai et al., 2017). The 3D prompt and segmentation results are highlighted in red and green, respectively.
+            </div>
+          </div>
+
+
+          <div class="box m-5">
+            <div class="content has-text-centered">
+              <img src="demos/outdoor.jpg" alt="arithmetic reasoning" width="70%"/>
+              <p> 
+                3D Outdoor Scene Segmentation with <span class="mathvista">Sam2Point</span> on Semantic3D (Hackel et al., 2017). The 3D prompt and segmentation results are highlighted in red and green, respectively.
+              </div>
+          </div>
+
+
+          <div class="box m-5">
+            <div class="content has-text-centered">
+              <img src="demos/lidar.jpg" alt="arithmetic reasoning" width="70%"/>
+              <p> 
+                3D Raw LiDAR Segmentation with <span class="mathvista">Sam2Point</span> on KITTI (Geiger et al., 2012). The 3D prompt and segmentation results are highlighted in red and green, respectively.</div>
+          </div>
+
+      </div>
+    </div>
+    <!--/ Abstract. -->
+</div>
+</section>
+
+<!-- 
+<section class="section">
+    <div class="container" style="margin-bottom: 2vh;">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+          <h2 class="title is-3">Development Roadmap from LLaVA-NeXT to LLaVA-OneVision</h2>
+
+
+
+          <div class="center-container" style="margin-top: -70px; margin-bottom: -90px; margin-left: 90px;">
+            <svg width="900" height="400">
+            
+                <defs>
+                    <marker id="arrowhead" markerWidth="5" markerHeight="3.5" 
+                            refX="5" refY="1.75" orient="auto">
+                        <polygon points="0 0, 5 1.75, 0 3.5" />
+                    </marker>
+                </defs>
+                
+                <rect x="50" y="150" width="200" height="50" fill="#fdecdc" stroke="black" stroke-width="1" rx="10" ry="10"></rect>
+                <text x="78" y="180.5" font-family="Times New Roman" font-size="14">Jan</text>
+                <circle cx="120" cy="176" r="5" fill="#b22222"></circle>
+                <text x="140" y="180.5" font-family="Times New Roman" font-size="14" style="font-weight:bold;"><a href="https://llava-vl.github.io/blog/2024-01-30-llava-next/" fill="blue">LLaVA-NeXT</a></text>
+            
+                <rect x="300" y="50" width="200" height="50" fill="#f0f8ff" stroke="black" stroke-width="1" rx="10" ry="10"></rect>
+                <text x="328" y="79" font-family="Times New Roman" font-size="14">April</text>
+                <circle cx="375" cy="74.5" r="5" fill="#1e90ff"></circle>
+                <text x="390" y="70" font-family="Times New Roman" font-size="14">LLaVA-NeXT</text>
+                <text x="390" y="90" font-family="Times New Roman" font-size="14" style="font-weight:bold;"><a href="https://llava-vl.github.io/blog/2024-04-30-llava-next-video/" fill="blue">(Video)</a></text>
+            
+                <rect x="300" y="125" width="200" height="50" fill="#f0f8ff" stroke="black" stroke-width="1" rx="10" ry="10"></rect>
+                <text x="328" y="154" font-family="Times New Roman" font-size="14">May</text>
+                <circle cx="375" cy="149.5" r="5" fill="#1e90ff"></circle>
+                <text x="390" y="145" font-family="Times New Roman" font-size="14">LLaVA-NeXT</text>
+                <text x="390" y="165" font-family="Times New Roman" font-size="14" style="font-weight:bold;"><a href="https://llava-vl.github.io/blog/2024-05-10-llava-next-stronger-llms/" fill="blue">(Stronger)</a></text>
+            
+                <rect x="300" y="200" width="200" height="50" fill="#f0f8ff" stroke="black" stroke-width="1" rx="10" ry="10"></rect>
+                <text x="328" y="229" font-family="Times New Roman" font-size="14">May</text>
+                <circle cx="375" cy="224.5" r="5" fill="#1e90ff"></circle>
+                <text x="390" y="220" font-family="Times New Roman" font-size="14">LLaVA-NeXT</text>
+                <text x="390" y="240" font-family="Times New Roman" font-size="14" style="font-weight:bold;"><a href="https://llava-vl.github.io/blog/2024-05-25-llava-next-ablations/" fill="blue">(Ablations)</a></text>
+            
+                <rect x="300" y="275" width="200" height="50" fill="#f0f8ff" stroke="black" stroke-width="1" rx="10" ry="10"></rect>
+                <text x="328" y="304" font-family="Times New Roman" font-size="14">June</text>
+                <circle cx="375" cy="299.5" r="5" fill="#1e90ff"></circle>
+                <text x="390" y="295" font-family="Times New Roman" font-size="14">LLaVA-NeXT</text>
+                <text x="390" y="315" font-family="Times New Roman" font-size="14" style="font-weight:bold;"><a href="https://llava-vl.github.io/blog/2024-06-16-llava-next-interleave/" fill="blue">(Interleave)</a></text>
+            
+                <rect x="550" y="150" width="240" height="50" fill="#e6ffe6" stroke="black" stroke-width="1" rx="10" ry="10"></rect>
+                <text x="578" y="180.5" font-family="Times New Roman" font-size="14">July</text>
+                <circle cx="625" cy="176" r="5" fill="#008000"></circle>
+                <text x="640" y="180.5" font-family="Times New Roman" font-size="14" style="font-weight:bold;">LLaVA-OneVision</text>
+            
+                <line x1="250" y1="175" x2="300" y2="75" stroke="black" stroke-width="2" marker-end="url(#arrowhead)"></line>
+                <line x1="250" y1="175" x2="300" y2="150" stroke="black" stroke-width="2"  marker-end="url(#arrowhead)"></line>
+                <line x1="250" y1="175" x2="300" y2="225" stroke="black" stroke-width="2"  marker-end="url(#arrowhead)"></line>
+                <line x1="250" y1="175" x2="300" y2="300" stroke="black" stroke-width="2"  marker-end="url(#arrowhead)"></line>
+                <line x1="500" y1="75" x2="550" y2="175" stroke="black" stroke-width="2"  marker-end="url(#arrowhead)"></line>
+                <line x1="500" y1="150" x2="550" y2="175" stroke="black" stroke-width="2"  marker-end="url(#arrowhead)"></line>
+                <line x1="500" y1="225" x2="550" y2="175" stroke="black" stroke-width="2"  marker-end="url(#arrowhead)"></line>
+                <line x1="500" y1="300" x2="550" y2="175" stroke="black" stroke-width="2"  marker-end="url(#arrowhead)"></line>
+            </svg>
+            </div>
+
+
+
+          <div class="content has-text-justified">
+            <ul>
+                <li><a href="https://llava-vl.github.io/blog/2024-01-30-llava-next/">LLaVA-NeXT: Improved reasoning, OCR, and world knowledge</a></li>
+                <li><a href="https://llava-vl.github.io/blog/2024-04-30-llava-next-video/">LLaVA-NeXT: A Strong Zero-shot Video Understanding Model</a></li>
+                <li><a href="https://llava-vl.github.io/blog/2024-05-10-llava-next-stronger-llms/">LLaVA-NeXT: Stronger LLMs Supercharge Multimodal Capabilities in the Wild</a></li>
+                <li><a href="https://llava-vl.github.io/blog/2024-05-25-llava-next-ablations/">LLaVA-NeXT: What Else Influences Visual Instruction Tuning Beyond Data?</a></li>
+                <li><a href="https://llava-vl.github.io/blog/2024-06-16-llava-next-interleave/">LLaVA-NeXT: Tackling Multi-image, Video, and 3D in Large Multimodal Models</a></li>
+                <li><a href="https://lmms-lab.github.io/lmms-eval-blog/lmms-eval-0.1/">Accelerating the Development of Large Multimodal Models with LMMs-Eval</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+  </div>
+  </section>
+
+                     -->
+
+<!-- @PAN TODO: bibtex -->
+<section class="section" id="BibTeX">
+  <div class="container is-max-desktop content" style="margin-top: 60px;">
+    <h2 class="title is-3 has-text-centered">Citation</h2>
+	<pre><code>@article{guo2024sam2point,
+  	title={SAM2Point: Segment Any 3D as Videos in Zero-shot and Promptable Manners},
+  	author={Guo, Ziyu and Zhang, Renrui and Zhu, Xiangyang and Tong, Chengzhuo and Gao, Peng and Li, Chunyuan and Heng, Pheng-Ann},
+  	journal={arXiv},
+  	year={2024}
+}</code></pre>
+  </div>
+</section>
+
+
+
+</div>
+<a class="u-url" href="/blog/2024-08-05-llava-onevision/" hidden></a>
+</article>
+</div>
+
+
+</body>
+</html>
